@@ -18,11 +18,13 @@ enum BlockType {
 
 App* app;
 int grid[CELL_ROWS][CELL_COLS];
+int gridNextState[CELL_ROWS][CELL_COLS];
 int running = 1;
 enum BlockType activeBlockType;
 
 void init(void);
 void handleInput(void);
+void update(void);
 void drawGrid(void);
 void drawBlock(int, SDL_Rect);
 void triggerBlockChange(int, int);
@@ -37,6 +39,8 @@ int main()
         SDL_SetRenderDrawColor(app->renderer, 255, 255, 255, 255);
         
         handleInput();
+
+        update();
 
         SDL_RenderClear(app->renderer);
         drawGrid();
@@ -109,6 +113,29 @@ void handleInput()
     }
 }
 
+void update(void)
+{
+    // perform logic
+    for (int row = 0; row < CELL_ROWS; row++) {
+        for (int col = 0; col < CELL_COLS; col++) {
+            int blockType = grid[row][col];
+
+            if (blockType == Sand) {
+                gridNextState[row][col] = None;
+                gridNextState[row][col + 1] = Sand;
+            }
+
+        }
+    }
+
+    // copy grid next state to the original
+    for (int row = 0; row < CELL_ROWS; row++) {
+        for (int col = 0; col < CELL_COLS; col++) {
+            grid[row][col] = gridNextState[row][col];
+        }
+    }
+}
+
 void drawGrid()
 {
     for (int row = 0; row < CELL_ROWS; row++) {
@@ -127,7 +154,7 @@ void drawBlock(int blockType, SDL_Rect block)
 {
     if (blockType == None) {
         SDL_SetRenderDrawColor(app->renderer, 0, 0, 0, 0);
-        SDL_RenderDrawRect(app->renderer, &block);
+        SDL_RenderFillRect(app->renderer, &block);
     }
     else if (blockType == Sand) {
         SDL_SetRenderDrawColor(app->renderer, 213, 123, 244, 255);
