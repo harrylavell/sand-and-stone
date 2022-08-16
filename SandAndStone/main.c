@@ -120,10 +120,32 @@ void update(void)
         for (int col = 0; col < CELL_COLS; col++) {
             int blockType = grid[row][col];
 
+            // free falling
             if (blockType == Sand && col < CELL_COLS - 1) {
                 gridNextState[row][col] = None;
                 gridNextState[row][col + 1] = Sand;
             }
+
+            // landed on a sand block
+            if (blockType == Sand && grid[row][col + 1] == Sand) {
+
+                // check left
+                if (grid[row - 1][col + 1] == None) {
+                    gridNextState[row - 1][col + 1] = Sand;
+                }
+
+                // check right
+                else if (grid[row + 1][col + 1] == None) {
+                    gridNextState[row + 1][col + 1] = Sand;
+                }
+
+                // stack on top
+                else {
+                    gridNextState[row][col] = Sand;
+                }
+            }
+
+            // landed on a stone block
 
             if (blockType == Stone) {
                 gridNextState[row][col] = Stone;
