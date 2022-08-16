@@ -10,9 +10,15 @@
 #define CELL_COLS SCREEN_HEIGHT / CELL_SIZE
 #define FPS 30
 
+enum BlockType {
+    Sand,
+    Stone
+};
+
 App* app;
 int grid[CELL_ROWS][CELL_COLS];
 int running = 1;
+enum BlockType activeBlockType;
 
 void init(void);
 void handleInput(void);
@@ -80,10 +86,10 @@ void handleInput()
             y = event.motion.y;
 
             if (SDL_GetMouseState(&x, &y) & SDL_BUTTON_LMASK)
-                printf("Left pressed\n");
+                activeBlockType = Sand;
 
             if (SDL_GetMouseState(&x, &y) & SDL_BUTTON_RMASK)
-                printf("Right pressed\n");
+                activeBlockType = Stone;
             break;
 
         case SDL_QUIT:
