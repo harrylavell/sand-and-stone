@@ -126,8 +126,8 @@ void update(void)
                 gridNextState[row][col + 1] = Sand;
             }
 
-            // landed on a sand block
-            if (blockType == Sand && grid[row][col + 1] == Sand) {
+            // landed on a solid block
+            if (blockType == Sand && (grid[row][col + 1] == Sand || grid[row][col + 1] == Stone)) {
 
                 // check left
                 if (grid[row - 1][col + 1] == None) {
@@ -144,8 +144,6 @@ void update(void)
                     gridNextState[row][col] = Sand;
                 }
             }
-
-            // landed on a stone block
 
             if (blockType == Stone) {
                 gridNextState[row][col] = Stone;
