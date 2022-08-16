@@ -11,6 +11,7 @@
 #define FPS 30
 
 enum BlockType {
+    None,
     Sand,
     Stone
 };
@@ -22,6 +23,8 @@ enum BlockType activeBlockType;
 
 void init(void);
 void handleInput(void);
+void drawGrid(void);
+void drawBlock(SDL_Rect);
 
 int main()
 {
@@ -99,5 +102,36 @@ void handleInput()
         default:
             break;
         }
+    }
+}
+
+void drawGrid()
+{
+    for (int row = 0; row < CELL_ROWS; row++) {
+        for (int col = 0; col < CELL_COLS; col++) {
+            SDL_Rect block;
+            block.x = row * CELL_SIZE;
+            block.y = col * CELL_SIZE;
+            block.w = block.h = CELL_SIZE;
+            drawBlock(block);
+        }
+    }
+}
+
+void drawBlock(SDL_Rect block)
+{
+    if (activeBlockType == None) {
+        SDL_SetRenderDrawColor(app->renderer, 0, 0, 0, 0);
+        SDL_RenderDrawRect(app->renderer, &block);
+    }
+    else if (activeBlockType == Sand) {
+        SDL_SetRenderDrawColor(app->renderer, 213, 123, 244, 255);
+        SDL_RenderDrawRect(app->renderer, &block);
+        SDL_RenderFillRect(app->renderer, &block);
+    }
+    else if (activeBlockType == Stone) {
+        SDL_SetRenderDrawColor(app->renderer, 32, 87, 98, 255);
+        SDL_RenderDrawRect(app->renderer, &block);
+        SDL_RenderFillRect(app->renderer, &block);
     }
 }
