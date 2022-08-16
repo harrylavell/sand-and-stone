@@ -120,7 +120,7 @@ void update(void)
         for (int col = 0; col < CELL_COLS; col++) {
             int blockType = grid[row][col];
 
-            if (blockType == Sand) {
+            if (blockType == Sand && col < CELL_COLS-1) {
                 gridNextState[row][col] = None;
                 gridNextState[row][col + 1] = Sand;
             }
