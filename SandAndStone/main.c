@@ -120,9 +120,13 @@ void update(void)
         for (int col = 0; col < CELL_COLS; col++) {
             int blockType = grid[row][col];
 
-            if (blockType == Sand && col < CELL_COLS-1) {
+            if (blockType == Sand && col < CELL_COLS - 1) {
                 gridNextState[row][col] = None;
                 gridNextState[row][col + 1] = Sand;
+            }
+
+            if (blockType == Stone) {
+                gridNextState[row][col] = Stone;
             }
 
         }
@@ -157,12 +161,12 @@ void drawBlock(int blockType, SDL_Rect block)
         SDL_RenderFillRect(app->renderer, &block);
     }
     else if (blockType == Sand) {
-        SDL_SetRenderDrawColor(app->renderer, 213, 123, 244, 255);
+        SDL_SetRenderDrawColor(app->renderer, 194, 178, 128, 255);
         SDL_RenderDrawRect(app->renderer, &block);
         SDL_RenderFillRect(app->renderer, &block);
     }
     else if (blockType == Stone) {
-        SDL_SetRenderDrawColor(app->renderer, 32, 87, 98, 255);
+        SDL_SetRenderDrawColor(app->renderer, 126, 150, 159, 255);
         SDL_RenderDrawRect(app->renderer, &block);
         SDL_RenderFillRect(app->renderer, &block);
     }
