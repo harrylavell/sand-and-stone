@@ -8,12 +8,14 @@
 #define CELL_SIZE 8
 #define CELL_ROWS SCREEN_WIDTH / CELL_SIZE
 #define CELL_COLS SCREEN_HEIGHT / CELL_SIZE
+#define FPS 30
 
 App* app;
 int grid[CELL_ROWS][CELL_COLS];
 int running = 1;
 
 void init(void);
+void handleInput(void);
 
 int main()
 {
@@ -22,7 +24,14 @@ int main()
 
     while (running)
     {
+        SDL_SetRenderDrawColor(app->renderer, 255, 255, 255, 255);
+        
+        handleInput();
 
+        SDL_RenderClear(app->renderer);
+        SDL_RenderPresent(app->renderer);
+
+        SDL_Delay(1000 / FPS);
     }
     
 	return 0;
@@ -54,5 +63,35 @@ void init()
     {
         printf("Failed  to create SDL renderer: %s\n", SDL_GetError);
         exit(1);
+    }
+}
+
+void handleInput()
+{
+    SDL_Event event;
+    int x, y;
+
+    while (SDL_PollEvent(&event))
+    {
+        switch (event.type)
+        {
+        case SDL_MOUSEBUTTONDOWN:
+            x = event.motion.x;
+            y = event.motion.y;
+
+            if (SDL_GetMouseState(&x, &y) & SDL_BUTTON_LMASK)
+                printf("Left pressed\n");
+
+            if (SDL_GetMouseState(&x, &y) & SDL_BUTTON_RMASK)
+                printf("Right pressed\n");
+            break;
+
+        case SDL_QUIT:
+            running = 0;
+            break;
+
+        default:
+            break;
+        }
     }
 }
