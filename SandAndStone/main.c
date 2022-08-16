@@ -24,7 +24,8 @@ enum BlockType activeBlockType;
 void init(void);
 void handleInput(void);
 void drawGrid(void);
-void drawBlock(SDL_Rect);
+void drawBlock(int, SDL_Rect);
+void triggerBlockChange(int, int);
 
 int main()
 {
@@ -38,6 +39,7 @@ int main()
         handleInput();
 
         SDL_RenderClear(app->renderer);
+        drawGrid();
         SDL_RenderPresent(app->renderer);
 
         SDL_Delay(1000 / FPS);
@@ -93,6 +95,8 @@ void handleInput()
 
             if (SDL_GetMouseState(&x, &y) & SDL_BUTTON_RMASK)
                 activeBlockType = Stone;
+
+            triggerBlockChange(x, y);
             break;
 
         case SDL_QUIT:
@@ -113,25 +117,33 @@ void drawGrid()
             block.x = row * CELL_SIZE;
             block.y = col * CELL_SIZE;
             block.w = block.h = CELL_SIZE;
-            drawBlock(block);
+
+            drawBlock(grid[row][col], block);
         }
     }
 }
 
-void drawBlock(SDL_Rect block)
+void drawBlock(int blockType, SDL_Rect block)
 {
-    if (activeBlockType == None) {
+    if (blockType == None) {
         SDL_SetRenderDrawColor(app->renderer, 0, 0, 0, 0);
         SDL_RenderDrawRect(app->renderer, &block);
     }
-    else if (activeBlockType == Sand) {
+    else if (blockType == Sand) {
         SDL_SetRenderDrawColor(app->renderer, 213, 123, 244, 255);
         SDL_RenderDrawRect(app->renderer, &block);
         SDL_RenderFillRect(app->renderer, &block);
     }
-    else if (activeBlockType == Stone) {
+    else if (blockType == Stone) {
         SDL_SetRenderDrawColor(app->renderer, 32, 87, 98, 255);
         SDL_RenderDrawRect(app->renderer, &block);
         SDL_RenderFillRect(app->renderer, &block);
     }
+}
+
+void triggerBlockChange(int x, int y)
+{
+    int row = floor(x / CELL_SIZE);
+    int col = floor(y / CELL_SIZE);
+    grid[row][col] = activeBlockType;
 }
