@@ -5,7 +5,7 @@
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720
 
-#define CELL_SIZE 16
+#define CELL_SIZE 4
 #define CELL_ROWS SCREEN_WIDTH / CELL_SIZE
 #define CELL_COLS SCREEN_HEIGHT / CELL_SIZE
 #define FPS 30
@@ -92,7 +92,7 @@ void handleInput()
         switch (event.type)
         {
         case SDL_MOUSEBUTTONDOWN:
-            holdingLeftMouse = 1;
+            holdingMouseButton = 1;
             x = event.motion.x;
             y = event.motion.y;
 
@@ -114,7 +114,7 @@ void handleInput()
             break;
 
         case SDL_MOUSEBUTTONUP:
-            holdingLeftMouse = 0;
+            holdingMouseButton = 0;
             break;
 
         case SDL_QUIT:
