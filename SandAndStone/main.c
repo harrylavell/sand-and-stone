@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <SDL.h>
 #include "structs.h"
 
@@ -19,9 +20,9 @@ enum BlockType {
 App* app;
 short grid[CELL_ROWS][CELL_COLS];
 short gridNextState[CELL_ROWS][CELL_COLS];
-int running = 1;
 enum BlockType activeBlockType;
 
+int running = 1;
 int holdingMouseButton = 0;
 int x, y;
 
@@ -35,6 +36,7 @@ int coordsWithinBounds(int, int);
 
 int main()
 {
+    srand(NULL);
     app = malloc(sizeof(app));
     init();
 
@@ -204,7 +206,16 @@ void drawBlock(int blockType, SDL_Rect block)
         SDL_RenderFillRect(app->renderer, &block);
     }
     else if (blockType == Sand) {
-        SDL_SetRenderDrawColor(app->renderer, 194, 178, 128, 255);
+
+        int r = rand() % 101;
+
+        if (r > 50) {
+            SDL_SetRenderDrawColor(app->renderer, 194, 178, 128, 255);
+        }
+        else {
+            SDL_SetRenderDrawColor(app->renderer, 181, 163, 107, 255);
+        }
+
         SDL_RenderFillRect(app->renderer, &block);
     }
     else if (blockType == Stone) {
