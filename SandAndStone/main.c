@@ -8,7 +8,7 @@
 #define CELL_SIZE 4
 #define CELL_ROWS SCREEN_WIDTH / CELL_SIZE
 #define CELL_COLS SCREEN_HEIGHT / CELL_SIZE
-#define FPS 30
+#define FPS 120
 
 enum BlockType {
     None,
@@ -17,8 +17,8 @@ enum BlockType {
 };
 
 App* app;
-int grid[CELL_ROWS][CELL_COLS];
-int gridNextState[CELL_ROWS][CELL_COLS];
+short grid[CELL_ROWS][CELL_COLS];
+short gridNextState[CELL_ROWS][CELL_COLS];
 int running = 1;
 int holdingMouseButton = 0;
 enum BlockType activeBlockType;
@@ -109,8 +109,13 @@ void handleInput()
             x = event.motion.x;
             y = event.motion.y;
 
-            if (holdingMouseButton)
+            if (holdingMouseButton) {
                 triggerBlockChange(x, y);
+                triggerBlockChange(x + CELL_SIZE, y);
+                triggerBlockChange(x, y + CELL_SIZE);
+                triggerBlockChange(x - CELL_SIZE, y);
+                triggerBlockChange(x, y - CELL_SIZE);
+            }
             break;
 
         case SDL_MOUSEBUTTONUP:
@@ -201,12 +206,10 @@ void drawBlock(int blockType, SDL_Rect block)
     }
     else if (blockType == Sand) {
         SDL_SetRenderDrawColor(app->renderer, 194, 178, 128, 255);
-        SDL_RenderDrawRect(app->renderer, &block);
         SDL_RenderFillRect(app->renderer, &block);
     }
     else if (blockType == Stone) {
         SDL_SetRenderDrawColor(app->renderer, 126, 150, 159, 255);
-        SDL_RenderDrawRect(app->renderer, &block);
         SDL_RenderFillRect(app->renderer, &block);
     }
 }
