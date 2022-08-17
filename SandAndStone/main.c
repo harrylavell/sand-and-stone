@@ -8,7 +8,7 @@
 #define CELL_SIZE 4
 #define CELL_ROWS SCREEN_WIDTH / CELL_SIZE
 #define CELL_COLS SCREEN_HEIGHT / CELL_SIZE
-#define FPS 120
+#define FPS 1000
 
 enum BlockType {
     None,
@@ -22,6 +22,8 @@ short gridNextState[CELL_ROWS][CELL_COLS];
 int running = 1;
 int holdingMouseButton = 0;
 enum BlockType activeBlockType;
+
+int x, y;
 
 void init(void);
 void handleInput(void);
@@ -86,7 +88,6 @@ void init()
 void handleInput()
 {
     SDL_Event event;
-    int x, y;
 
     while (SDL_PollEvent(&event))
     {
@@ -94,29 +95,17 @@ void handleInput()
         {
         case SDL_MOUSEBUTTONDOWN:
             holdingMouseButton = 1;
-            x = event.motion.x;
-            y = event.motion.y;
 
             if (SDL_GetMouseState(&x, &y) & SDL_BUTTON_LMASK)
                 activeBlockType = Sand;
 
             if (SDL_GetMouseState(&x, &y) & SDL_BUTTON_RMASK)
                 activeBlockType = Stone;
-
-            triggerBlockChange(x, y);
             break;
 
         case SDL_MOUSEMOTION:
             x = event.motion.x;
             y = event.motion.y;
-
-            if (holdingMouseButton && coordsWithinBounds(x, y)) {
-                triggerBlockChange(x, y);
-                triggerBlockChange(x + CELL_SIZE, y);
-                triggerBlockChange(x, y + CELL_SIZE);
-                triggerBlockChange(x - CELL_SIZE, y);
-                triggerBlockChange(x, y - CELL_SIZE);
-            }
             break;
 
         case SDL_MOUSEBUTTONUP:
@@ -135,6 +124,15 @@ void handleInput()
 
 void update(void)
 {
+    // generate blocks
+    if (holdingMouseButton && coordsWithinBounds(x, y)) {
+        triggerBlockChange(x, y);
+        triggerBlockChange(x + CELL_SIZE, y);
+        triggerBlockChange(x, y + CELL_SIZE);
+        triggerBlockChange(x - CELL_SIZE, y);
+        triggerBlockChange(x, y - CELL_SIZE);
+    }
+
     // perform logic
     for (int row = 0; row < CELL_ROWS; row++) {
         for (int col = 0; col < CELL_COLS; col++) {
