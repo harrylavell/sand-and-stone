@@ -5,7 +5,7 @@
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720
 
-#define CELL_SIZE 8
+#define CELL_SIZE 16
 #define CELL_ROWS SCREEN_WIDTH / CELL_SIZE
 #define CELL_COLS SCREEN_HEIGHT / CELL_SIZE
 #define FPS 30
@@ -20,6 +20,7 @@ App* app;
 int grid[CELL_ROWS][CELL_COLS];
 int gridNextState[CELL_ROWS][CELL_COLS];
 int running = 1;
+int holdingMouseButton = 0;
 enum BlockType activeBlockType;
 
 void init(void);
@@ -91,6 +92,7 @@ void handleInput()
         switch (event.type)
         {
         case SDL_MOUSEBUTTONDOWN:
+            holdingLeftMouse = 1;
             x = event.motion.x;
             y = event.motion.y;
 
@@ -101,6 +103,18 @@ void handleInput()
                 activeBlockType = Stone;
 
             triggerBlockChange(x, y);
+            break;
+
+        case SDL_MOUSEMOTION:
+            x = event.motion.x;
+            y = event.motion.y;
+
+            if (holdingMouseButton)
+                triggerBlockChange(x, y);
+            break;
+
+        case SDL_MOUSEBUTTONUP:
+            holdingLeftMouse = 0;
             break;
 
         case SDL_QUIT:
@@ -126,8 +140,8 @@ void update(void)
                 gridNextState[row][col + 1] = Sand;
             }
 
-            // landed on a solid block
-            if (blockType == Sand && (grid[row][col + 1] == Sand || grid[row][col + 1] == Stone)) {
+            // landed on a sand block
+            if (blockType == Sand && grid[row][col + 1] == Sand) {
 
                 // check left
                 if (grid[row - 1][col + 1] == None) {
@@ -143,6 +157,11 @@ void update(void)
                 else {
                     gridNextState[row][col] = Sand;
                 }
+            }
+
+            // landed on a stone block
+            if (blockType == Sand && (grid[row][col + 1] == Stone)) {
+                gridNextState[row][col] = Sand;
             }
 
             if (blockType == Stone) {
