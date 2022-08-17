@@ -20,9 +20,9 @@ App* app;
 short grid[CELL_ROWS][CELL_COLS];
 short gridNextState[CELL_ROWS][CELL_COLS];
 int running = 1;
-int holdingMouseButton = 0;
 enum BlockType activeBlockType;
 
+int holdingMouseButton = 0;
 int x, y;
 
 void init(void);
@@ -148,12 +148,12 @@ void update(void)
             if (blockType == Sand && grid[row][col + 1] == Sand) {
 
                 // check left
-                if (grid[row - 1][col + 1] == None) {
+                if (grid[row - 1][col + 1] == None && row - 1 >= 0) {
                     gridNextState[row - 1][col + 1] = Sand;
                 }
 
                 // check right
-                else if (grid[row + 1][col + 1] == None) {
+                else if (grid[row + 1][col + 1] == None && row + 1 < CELL_ROWS) {
                     gridNextState[row + 1][col + 1] = Sand;
                 }
 
@@ -222,8 +222,8 @@ void triggerBlockChange(int x, int y)
 
 int coordsWithinBounds(int x, int y)
 {
-    if (x >= 0 && x <= SCREEN_WIDTH)
-        if (y >= 0 && y <= SCREEN_HEIGHT)
+    if (x > 0 && x <= SCREEN_WIDTH)
+        if (y > 0 && y <= SCREEN_HEIGHT)
             return 1;
     return 0;
 }
