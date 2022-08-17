@@ -29,6 +29,7 @@ void update(void);
 void drawGrid(void);
 void drawBlock(int, SDL_Rect);
 void triggerBlockChange(int, int);
+int coordsWithinBounds(int, int);
 
 int main()
 {
@@ -109,7 +110,7 @@ void handleInput()
             x = event.motion.x;
             y = event.motion.y;
 
-            if (holdingMouseButton) {
+            if (holdingMouseButton && coordsWithinBounds(x, y)) {
                 triggerBlockChange(x, y);
                 triggerBlockChange(x + CELL_SIZE, y);
                 triggerBlockChange(x, y + CELL_SIZE);
@@ -219,4 +220,12 @@ void triggerBlockChange(int x, int y)
     int row = floor(x / CELL_SIZE);
     int col = floor(y / CELL_SIZE);
     grid[row][col] = activeBlockType;
+}
+
+int coordsWithinBounds(int x, int y)
+{
+    if (x >= 0 && x <= SCREEN_WIDTH)
+        if (y >= 0 && y <= SCREEN_HEIGHT)
+            return 1;
+    return 0;
 }
